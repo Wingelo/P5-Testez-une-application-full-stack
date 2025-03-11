@@ -8,7 +8,7 @@ import com.openclassrooms.starterjwt.security.jwt.AuthTokenFilter;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class AuthTokenFilterTest {
+public class AuthTokenFilterTest {
 
     private final AuthTokenFilter authTokenFilter = new AuthTokenFilter();
 
