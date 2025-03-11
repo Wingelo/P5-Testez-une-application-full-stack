@@ -9,7 +9,7 @@ Go to the Back-end folder
 For launch and generate the jacoco code coverage:
 
 ```bash
-  cd back
+  mvn clean test
 ```
 
 ## FRONT END
