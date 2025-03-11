@@ -29,7 +29,7 @@ Install dependencies:
 Launch Front-end:
 
 ```bash
-  npm run start;
+  npm run start
 ```
 
 Launching e2e test:
