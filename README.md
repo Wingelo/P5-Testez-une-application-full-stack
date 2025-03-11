@@ -14,7 +14,7 @@ For launch and generate the jacoco code coverage:
 
 ## FRONT END
 #### E2E
-Go to the Back-end folder
+Go to the Front-end folder
 
 ```bash
   cd front
