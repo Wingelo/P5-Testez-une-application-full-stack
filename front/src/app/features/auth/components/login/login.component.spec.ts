@@ -11,6 +11,8 @@ import { expect } from '@jest/globals';
 import { SessionService } from 'src/app/services/session.service';
 
 import { LoginComponent } from './login.component';
+import {AuthService} from "../../services/auth.service";
+import {throwError} from "rxjs";
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -39,4 +41,29 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("Should form value be of type LoginRequest", ()=>{
+    const expectedEmail = "test@test.com";
+    const expectedPassword = "password";
+
+    component.form.controls['email'].setValue(expectedEmail);
+    component.form.controls['password'].setValue(expectedPassword);
+
+    component.submit();
+
+    const loginRequest = component.form.value;
+    expect(loginRequest).toBeTruthy();
+    expect(loginRequest.email).toEqual(expectedEmail);
+    expect(loginRequest.password).toEqual(expectedPassword);
+  })
+
+  it('Should set OnError to true when login fails', () =>{
+    const authService = TestBed.inject(AuthService);
+
+    jest.spyOn(authService,'login').mockReturnValue(throwError(()=> 'Error'));
+
+    component.submit()
+
+    expect(component.onError).toBe(true);
+  })
 });

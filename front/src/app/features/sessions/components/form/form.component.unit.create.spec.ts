@@ -14,17 +14,28 @@ import { SessionService } from 'src/app/services/session.service';
 import { SessionApiService } from '../../services/session-api.service';
 
 import { FormComponent } from './form.component';
+import {ActivatedRoute, convertToParamMap, Router} from "@angular/router";
 
 describe('FormComponent', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
+  let router: Router;
 
   const mockSessionService = {
     sessionInformation: {
-      admin: true
+      admin: false
     }
-  } 
+  }
 
+  class MockRouter {
+    get url(): string {
+      return '';
+    }
+
+    navigate(): Promise<boolean> {
+      return new Promise<boolean>((resolve, _) => resolve(true));
+    }
+  }
   beforeEach(async () => {
     await TestBed.configureTestingModule({
 
@@ -35,13 +46,15 @@ describe('FormComponent', () => {
         MatIconModule,
         MatFormFieldModule,
         MatInputModule,
-        ReactiveFormsModule, 
+        ReactiveFormsModule,
         MatSnackBarModule,
         MatSelectModule,
         BrowserAnimationsModule
       ],
       providers: [
-        { provide: SessionService, useValue: mockSessionService },
+        {provide: Router, useClass: MockRouter},
+        {provide: SessionService, useValue: mockSessionService},
+        {provide: ActivatedRoute, useValue: {snapshot: {paramMap: convertToParamMap({id: '1'})}},},
         SessionApiService
       ],
       declarations: [FormComponent]
@@ -50,10 +63,35 @@ describe('FormComponent', () => {
 
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+
+  // UNIT CREATE
+
+  it('should initialize form', () => {
+    component.ngOnInit();
+
+    expect(component.sessionForm?.get('name')?.value).toEqual('');
+    expect(component.sessionForm?.get('date')?.value).toEqual('');
+    expect(component.sessionForm?.get('teacher_id')?.value).toEqual('');
+    expect(component.sessionForm?.get('description')?.value).toEqual('');
+
+  })
+
+  it('should make the form incorrect when empty', () => {
+    component.sessionForm?.setValue(
+      {
+        name: '',
+        date: '',
+        teacher_id: '',
+        description: ''
+      })
+    expect(component.sessionForm?.valid).toBe(false);
+  })
 });

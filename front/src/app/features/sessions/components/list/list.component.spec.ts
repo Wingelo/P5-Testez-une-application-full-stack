@@ -33,4 +33,8 @@ describe('ListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should return session information', () => {
+    expect(component.user).toEqual(mockSessionService.sessionInformation);
+  })
 });

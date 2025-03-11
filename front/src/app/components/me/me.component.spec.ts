@@ -8,6 +8,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SessionService } from 'src/app/services/session.service';
 
 import { MeComponent } from './me.component';
+import {User} from "../../interfaces/user.interface";
+import {of} from "rxjs";
+import {UserService} from "../../services/user.service";
 
 describe('MeComponent', () => {
   let component: MeComponent;
@@ -41,5 +44,26 @@ describe('MeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it("Should call history", () => {
+    const userService = TestBed.inject(UserService);
+    const mockUser: User = {
+      id: 1,
+      email: "test@test.com",
+      lastName: "Test",
+      firstName: "User",
+      admin: true,
+      password: "password",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+    const spy = jest.spyOn(userService, 'getById').mockReturnValue(of(mockUser));
+
+    component.ngOnInit();
+
+    expect(spy).toHaveBeenCalledWith(mockSessionService.sessionInformation.id.toString());
+    expect(component.user).toEqual(mockUser);
+
   });
 });

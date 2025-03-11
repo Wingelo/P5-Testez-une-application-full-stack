@@ -8,7 +8,7 @@ describe('Login spec', () => {
         username: 'userName',
         firstName: 'firstName',
         lastName: 'lastName',
-        admin: true
+        admin: 1
       },
     })
 

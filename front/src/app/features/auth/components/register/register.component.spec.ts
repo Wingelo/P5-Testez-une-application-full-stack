@@ -9,6 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { expect } from '@jest/globals';
 
 import { RegisterComponent } from './register.component';
+import {AuthService} from "../../services/auth.service";
+import {throwError} from "rxjs";
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -20,7 +22,7 @@ describe('RegisterComponent', () => {
       imports: [
         BrowserAnimationsModule,
         HttpClientModule,
-        ReactiveFormsModule,  
+        ReactiveFormsModule,
         MatCardModule,
         MatFormFieldModule,
         MatIconModule,
@@ -37,4 +39,35 @@ describe('RegisterComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("Should form value be of type RegisterRequest", ()=>{
+    const expectedEmail = "toto@test.com";
+    const expectedPassword = "passwordtoto";
+    const expectedFirstName = "John";
+    const expectedLastName = "Doe";
+
+    component.form.controls['firstName'].setValue(expectedFirstName);
+    component.form.controls['lastName'].setValue(expectedLastName);
+    component.form.controls['email'].setValue(expectedEmail);
+    component.form.controls['password'].setValue(expectedPassword);
+
+    component.submit();
+
+    const registerRequest = component.form.value;
+    expect(registerRequest).toBeTruthy();
+    expect(registerRequest.email).toEqual(expectedEmail);
+    expect(registerRequest.password).toEqual(expectedPassword);
+    expect(registerRequest.firstName).toEqual(expectedFirstName);
+    expect(registerRequest.lastName).toEqual(expectedLastName);
+  })
+
+  it('Should set OnError to true when register fails', () =>{
+    const authService = TestBed.inject(AuthService);
+
+    jest.spyOn(authService,'register').mockReturnValue(throwError(()=> 'Error'));
+
+    component.submit()
+
+    expect(component.onError).toBe(true);
+  })
 });
